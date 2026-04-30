@@ -287,7 +287,7 @@ class TestConsecutiveFailureAbort:
             async def headless(self, *args, **kwargs):
                 return ("success", 0)
 
-        monkeypatch.setattr(runner_module, "get_runner", lambda _: MockRunner())
+        monkeypatch.setattr(runner_module, "get_runner", lambda *args, **kwargs: MockRunner())
 
         # Set a non-zero failure count
         runner_module._consecutive_failures = 1
@@ -310,7 +310,7 @@ class TestConsecutiveFailureAbort:
             async def headless(self, *args, **kwargs):
                 return ("error output", 1)  # non-zero exit code
 
-        monkeypatch.setattr(runner_module, "get_runner", lambda _: MockRunner())
+        monkeypatch.setattr(runner_module, "get_runner", lambda *args, **kwargs: MockRunner())
 
         # Start at 0
         assert runner_module._consecutive_failures == 0
@@ -333,7 +333,7 @@ class TestConsecutiveFailureAbort:
             async def headless(self, *args, **kwargs):
                 return ("error", 1)
 
-        monkeypatch.setattr(runner_module, "get_runner", lambda _: MockRunner())
+        monkeypatch.setattr(runner_module, "get_runner", lambda *args, **kwargs: MockRunner())
 
         # First failure - should not raise
         await invoke_agent("researcher", "test", tmp_path)
@@ -361,7 +361,7 @@ class TestConsecutiveFailureAbort:
             async def headless(self, *args, **kwargs):
                 return ("error", 1)
 
-        monkeypatch.setattr(runner_module, "get_runner", lambda _: MockRunner())
+        monkeypatch.setattr(runner_module, "get_runner", lambda *args, **kwargs: MockRunner())
 
         # First failure
         await invoke_agent("researcher", "test", tmp_path)
@@ -396,7 +396,7 @@ class TestConsecutiveFailureAbort:
             async def headless(self, *args, **kwargs):
                 raise RuntimeError("Connection failed")
 
-        monkeypatch.setattr(runner_module, "get_runner", lambda _: MockRunner())
+        monkeypatch.setattr(runner_module, "get_runner", lambda *args, **kwargs: MockRunner())
 
         # First failure via exception
         stdout, code = await invoke_agent("researcher", "test", tmp_path)
